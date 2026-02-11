@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super School</title>
+    <!-- Academic/School Icon -->
+    <link rel="icon" type="image/x-icon" href="https://www.gstatic.com">
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #111; font-family: sans-serif; }
+        
+        #nav-bar { 
+            position: absolute; top: 0; left: 0; width: 100%; background: #222; 
+            padding: 8px; display: flex; gap: 8px; z-index: 100; border-bottom: 1px solid #444; 
+            box-sizing: border-box;
+        }
+
+        input { flex-grow: 1; padding: 6px; border-radius: 4px; border: 1px solid #444; background: #333; color: white; }
+        
+        button { 
+            cursor: pointer; padding: 6px 12px; border-radius: 4px; border: none; 
+            background: #555; color: white; font-weight: bold; font-size: 12px; 
+        }
+        button:hover { background: #777; }
+
+        .panic-btn { background: #d9534f; margin-left: auto; }
+        
+        /* Sidebar Menu Styles */
+        #side-menu {
+            position: fixed; top: 0; left: -260px; width: 250px; height: 100%;
+            background: #1a1a1a; border-right: 1px solid #444; color: white; 
+            z-index: 200; transition: 0.3s ease; padding: 20px; box-sizing: border-box;
+            pointer-events: none;
+        }
+        #side-menu.active { left: 0; pointer-events: auto; }
+        #side-menu h3 { margin-top: 40px; font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        #side-menu p { font-size: 12px; color: #666; margin-bottom: 20px; }
+        
+        .link-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 10px; background: #333; padding: 10px; border-radius: 4px; 
+        }
+        .copy-btn { background: #007bff; padding: 4px 8px; font-size: 10px; }
+        .copy-btn:hover { background: #0056b3; }
+
+        #game-container { width: 100vw; height: 100vh; padding-top: 45px; box-sizing: border-box; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div id="nav-bar">
+        <button onclick="toggleMenu()">☰ LINKS</button>
+        <input type="text" id="urlInput" placeholder="Paste URL here...">
+        <button onclick="cleanLoad(document.getElementById('urlInput').value)">GO</button>
+        <button class="panic-btn" onclick="panic()">PANIC</button>
+    </div>
+
+    <!-- Side Menu -->
+    <div id="side-menu">
+        <button onclick="toggleMenu()" style="position:absolute; top:10px; right:10px; background:transparent;">✕</button>
+        <h3>Library</h3>
+        <p>These are websites that are tested to work with this tool. You may use others but they are not guaranteed to work.</p>
+        
+        <!-- Add your links here -->
+        <div class="link-item">
+            <span>Polytrack</span>
+            <button class="copy-btn" onclick="copyToInput('https://www.crazygames.com/embed/polytrack')">COPY</button>
+        </div>
+
+        <div class="link-item">
+            <span>2048</span>
+            <button class="copy-btn" onclick="copyToInput('https://mgarciaisaia.github.io/2048/')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Slither.io</span>
+            <button class="copy-btn" onclick="copyToInput('https://slither.io/')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Bubble Shooter</span>
+            <button class="copy-btn" onclick="copyToInput('https://www.bubbleshooter.com')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Zombs Royale</span>
+            <button class="copy-btn" onclick="copyToInput('https://zombsroyale.io')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Skribbl.io</span>
+            <button class="copy-btn" onclick="copyToInput('https://skribbl.io')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Paper.io</span>
+            <button class="copy-btn" onclick="copyToInput('https://paper-io.com')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Jellymar.io</span>
+            <button class="copy-btn" onclick="copyToInput('https://jellymar.io/')">COPY</button>
+        </div>
+        <div class="link-item">
+            <span>Ultrabox</span>
+            <button class="copy-btn" onclick="copyToInput('https://ultraabox.github.io/#u5N08Untitledn310s0k02l00e03t1Ua7g0fj07r1O_U00000000i0o321T1v0puf2f0000q0A010v3000O0d030AaF0B5Q56a5Pcfe3R0000E6c0b860161162463574T1v0pu65f0000q0B1a10O01d080A1F2B9Q44n4Pfc47R0000E3c0b862a7aT1v0puh5f150qg500Oa0d030A0F0B0Q4544Pf800R0000E2c01211T4v0puf0f1a0q050O01z8888onapap4oSBKSJJAArriiiiii07JCABrzrrrrrrr00YrkqHrsrrrrjr005zrAqzrjzrrqr1jRjrqGGrrzsrsA099ijrABJJJIAzrrtirqrqjqixzsrAjrqjiqaqqysttAJqjikikrizrHtBJJAzArzrIsRCITKSS099ijrAJS____Qg99habbCAYrDzh00E0c0b4h400000000h4g000000014h000000004h400000000p16000000')">COPY</button>
+        </div>
+        </div>
+    </div>
+
+    <div id="game-container"></div>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('side-menu').classList.toggle('active');
+        }
+
+        // Copies the link directly to the URL input for easy "Go" clicking
+        function copyToInput(url) {
+            const input = document.getElementById('urlInput');
+            input.value = url;
+            // Also copy to actual clipboard
+            navigator.clipboard.writeText(url);
+            toggleMenu(); // Close menu
+        }
+
+        function cleanLoad(url) {
+            let container = document.getElementById('game-container');
+            // If container is missing or accidentally placed inside the side-menu, recreate it at body end
+            if (!container || (container.closest && container.closest('#side-menu'))) {
+                if (container) container.remove();
+                container = document.createElement('div');
+                container.id = 'game-container';
+                document.body.appendChild(container);
+            }
+            container.innerHTML = '';
+            const frame = document.createElement('iframe');
+            frame.allow = "autoplay; fullscreen; keyboard-map; encrypted-media; picture-in-picture";
+            frame.style.width = '100%';
+            frame.style.height = '100%';
+            frame.style.border = 'none';
+            container.appendChild(frame);
+            // Some pages block navigation via contentWindow; fallback to setting src
+            try {
+                frame.contentWindow.location.replace(url);
+            } catch (e) {
+                frame.src = url;
+            }
+        }
+
+        function panic() {
+            window.location.replace('https://classroom.google.com');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '`') panic();
+        });
+    </script>
+</body>
+</html>
